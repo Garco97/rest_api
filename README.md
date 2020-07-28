@@ -89,9 +89,9 @@ Si se añade un producto con un `id` existente, se sobreescribe
 }
 ```
 
-## Delete a product
+## Borrar un producto
 
-**Definition**
+**Definición**
 
 `DELETE /products/<identifier>`
 
