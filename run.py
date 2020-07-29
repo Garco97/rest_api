@@ -7,57 +7,69 @@ api = Api(app)
 users  = json.load(open("users.json",))
 products = json.load(open("products.json",))
 
+class Products(Resource):
+    def get(self):
+        return products
+
 class Product(Resource):
-    def get(self, id):
-        print(id)
-        id = int(id)
+    def put(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("id")
+        parser.add_argument("name")
+        parser.add_argument("url")
+        parser.add_argument("price")
+        parser.add_argument("image")
+
+        params = parser.parse_args()
         for product in products:
-            if(product["id"] is id):
-                return product, 200
-        return "Product not found", 404
-
-    """  
-    def post(self, id):
-        parser = reqparse.RequestParser()
-        parser.add_argument("author")
-        parser.add_argument("quote")
-        params = parser.parse_args()
-        for quote in ai_quotes:
-            if(id == quote["id"]):
-                return f"Quote with id {id} already exists", 400
-        quote = {
-            "id": int(id),
-            "author": params["author"],
-            "quote": params["quote"]
+            if(params["id"] == product["id"]):
+                return "Quote with id "+params["id"]+" already exists", 400
+        product = {
+            "id":params["id"],
+            "name":params["name"],
+            "url":params["url"],
+            "price":params["price"],
+            "image":params["image"]
         }
-        ai_quotes.append(quote)
-        return quote, 201
+        products.append(product)
+        # Debería guardar en base de datos o algo por el estilo
+        return product, 201
 
-    def put(self, id):
+    def delete(self):
         parser = reqparse.RequestParser()
-        parser.add_argument("author")
-        parser.add_argument("quote")
+        parser.add_argument("id")
         params = parser.parse_args()
-        for quote in ai_quotes:
-            if(id == quote["id"]):
-                quote["author"] = params["author"]
-                quote["quote"] = params["quote"]
-                return quote, 200
-        
-        quote = {
-            "id": id,
-            "author": params["author"],
-            "quote": params["quote"]
-        }
-        
-        ai_quotes.append(quote)
-        return quote, 201
+        for product in products:
+            if product["id"] == params["id"]:
+                products.remove(product)
+                return f"Quote with id  is deleted.", 200
+        return "Quote with id "+params["id"]+" dont exists", 400
 
-    def delete(self, id):
-        global ai_quotes
-        ai_quotes = [quote for quote in ai_quotes if quote["id"] != id]
-        return f"Quote with id {id} is deleted.", 200
- """
-api.add_resource(Product, "/products/","/products/<string:id>")
+class Users(Resource):
+    def get(self):
+        return users
+
+class User(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("id")
+        params = parser.parse_args()
+        lista = []
+        for user in users:
+            if params["id"] == user["id"]:
+                lista = user["product_list"]
+                break
+        if not lista:
+            return "User with id "+params["id"]+" does not exists", 400
+        product_list = []
+        for product_id in lista:
+            for product in products:
+                if product_id == product["id"]:
+                    product_list.append(product)
+        return product_list
+api.add_resource(Product, "/product/", "/product")
+api.add_resource(Products, "/products/", "/products")
+api.add_resource(Users, "/users/", "/users")
+api.add_resource(User, "/user/", "/user")
 if __name__ == '__main__':
     app.run(debug=True)

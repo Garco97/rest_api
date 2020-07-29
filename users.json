@@ -4,34 +4,39 @@
         "name": "Diego",
         "user": "link",
         "price": "700.0",
-        "image":"image"
+        "image":"image",
+        "product_list" : ["0", "1", "2"]
     },
     {
         "id": "2",
         "name": "Diego",
         "user": "link",
         "price": "700.0",
-        "image":"image"
+        "image":"image",
+        "product_list" : ["0", "1", "2"]
     },
     {
         "id": "3",
         "name": "Diego",
         "user": "link",
         "price": "700.0",
-        "image":"image"
+        "image":"image",
+        "product_list" : ["0", "1", "2"]
     },
     {
         "id": "4",
         "name": "Diego",
         "user": "link",
         "price": "700.0",
-        "image":"image"
+        "image":"image",
+        "product_list" : ["0", "1", "2"]
     },
     {
         "id": "5",
         "name": "Diego",
         "user": "link",
         "price": "700.0",
-        "image":"image"
+        "image":"image",
+        "product_list" : ["0", "1", "2"]
     }
 ]
