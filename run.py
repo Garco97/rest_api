@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
+from bd_acces import *
 import json
+
 
 app = Flask(__name__)
 api = Api(app)
-users  = json.load(open("users.json",))
-products = json.load(open("products.json",))
+users  = json.load(open("users.json"))
+products = json.load(open("products.json"))
 
 class Products(Resource):
     def get(self):
@@ -66,7 +68,7 @@ class User(Resource):
             for product in products:
                 if product_id == product["id"]:
                     product_list.append(product)
-        return product_list
+        return product_list, 200
 api.add_resource(Product, "/product/", "/product")
 api.add_resource(Products, "/products/", "/products")
 api.add_resource(Users, "/users/", "/users")
