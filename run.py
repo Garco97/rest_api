@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import Api, Resource, reqparse
 import json
 
-
 app = Flask(__name__)
 api = Api(app)
 users  = json.load(open("users.json"))
@@ -13,6 +12,14 @@ class Products(Resource):
         return products
 
 class Product(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("id")
+        params = parser.parse_args()
+        for product in products:
+            if params["id"] == product["id"]:
+                return product
+        return "Product not found", 400
     def put(self):
         parser = reqparse.RequestParser()
         parser.add_argument("id")
@@ -24,7 +31,7 @@ class Product(Resource):
         params = parser.parse_args()
         for product in products:
             if(params["id"] == product["id"]):
-                return "Quote with id "+params["id"]+" already exists", 400
+                return "Product with id "+params["id"]+" already exists", 400
         product = {
             "id":params["id"],
             "name":params["name"],
@@ -43,14 +50,21 @@ class Product(Resource):
         for product in products:
             if product["id"] == params["id"]:
                 products.remove(product)
-                return f"Quote with id  is deleted.", 200
-        return "Quote with id "+params["id"]+" dont exists", 400
+                return f"Product with id "+params["id"]+" is deleted.", 200
+        return "Product with id "+params["id"]+" doesn't exist", 400
 
 class Users(Resource):
     def get(self):
         return users
 
 class User(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("id")
+        params = parser.parse_args()
+        for user in users:
+            if params["id"] == user["id"]:
+                return user
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument("id")
@@ -61,16 +75,18 @@ class User(Resource):
                 lista = user["product_list"]
                 break
         if not lista:
-            return "User with id "+params["id"]+" does not exists", 400
+            return "User with id "+params["id"]+" doesn't exist", 400
         product_list = []
         for product_id in lista:
             for product in products:
                 if product_id == product["id"]:
                     product_list.append(product)
         return product_list, 200
+
 api.add_resource(Product, "/product/", "/product")
 api.add_resource(Products, "/products/", "/products")
 api.add_resource(Users, "/users/", "/users")
 api.add_resource(User, "/user/", "/user")
+
 if __name__ == '__main__':
     app.run(debug=True)
