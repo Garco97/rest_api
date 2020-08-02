@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
-from bd_acces import *
 import json
 
 
