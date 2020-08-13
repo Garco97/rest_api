@@ -1,8 +1,12 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
+from flask_cors import CORS
+
 import json
 
 app = Flask(__name__)
+CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 api = Api(app)
 users  = json.load(open("users.json"))
 products = json.load(open("products.json"))
@@ -51,7 +55,7 @@ class Product(Resource):
             if product["id"] == params["id"]:
                 products.remove(product)
                 return f"Product with id "+params["id"]+" is deleted.", 200
-        return "Product with id "+params["id"]+" doesn't exist", 400
+        return "Product with id "+params["id"]+" doesn't exist", 404
 
 class Users(Resource):
     def get(self):
@@ -75,7 +79,7 @@ class User(Resource):
                 lista = user["product_list"]
                 break
         if not lista:
-            return "User with id "+params["id"]+" doesn't exist", 400
+            return "User with id "+params["id"]+" doesn't exist", 404
         product_list = []
         for product_id in lista:
             for product in products:
@@ -89,4 +93,4 @@ api.add_resource(Users, "/users/", "/users")
 api.add_resource(User, "/user/", "/user")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.1.47")
